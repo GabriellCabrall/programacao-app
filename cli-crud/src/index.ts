@@ -20,6 +20,7 @@ import {
   buscarRegiaoPorId,
   atualizarRegiao,
   excluirRegiao,
+  listarCompleto,
 } from "./services/regiaoService";
 
 const prompt = promptSync();
@@ -397,6 +398,7 @@ function menuPrincipal() {
     console.log("1. CRUD de UF");
     console.log("2. CRUD de cidade");
     console.log("3. CRUD de região");
+    console.log("4. Listagem completa (UF - Cidade - Região)");
     console.log("0. Sair");
 
     opcao = prompt("Escolha uma opção: ");
@@ -411,6 +413,24 @@ function menuPrincipal() {
       case "3":
         menuRegiao();
         break;
+      case "4": {
+        const lista = listarCompleto();
+
+        if (lista.length === 0) {
+          console.log("Nenhum registro encontrado");
+          break;
+        }
+
+        console.log("\n=== LISTAGEM COMPLETA ===");
+
+        for (const item of lista) {
+          console.log(
+            `${item.ufSigla} - ${item.cidadeNome} - ${item.regiaoNome}`,
+          );
+        }
+
+        break;
+      }
       case "0":
         console.log("Encerrando...");
         break;

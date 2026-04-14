@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import { v4 as uuidv4 } from "uuid";
 import { db } from "../db/connection";
-import { regioes, cidades } from "../db/schema";
+import { regioes, cidades, ufs } from "../db/schema";
 
 export function criarRegiao(nome: string, cidadeId: string) {
   db.insert(regioes)
@@ -35,4 +35,17 @@ export function atualizarRegiao(id: string, nome: string, cidadeId: string) {
 
 export function excluirRegiao(id: string) {
   db.delete(regioes).where(eq(regioes.id, id)).run();
+}
+
+export function listarCompleto() {
+  return db
+    .select({
+      ufSigla: ufs.sigla,
+      cidadeNome: cidades.nome,
+      regiaoNome: regioes.nome,
+    })
+    .from(regioes)
+    .leftJoin(cidades, eq(regioes.cidadeId, cidades.id))
+    .leftJoin(ufs, eq(cidades.ufId, ufs.id))
+    .all();
 }

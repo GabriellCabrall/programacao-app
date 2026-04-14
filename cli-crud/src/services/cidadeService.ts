@@ -1,8 +1,7 @@
 import { eq } from "drizzle-orm";
 import { v4 as uuidv4 } from "uuid";
 import { db } from "../db/connection";
-import { cidades } from "../db/schema";
-import { ufs } from "../db/schema";
+import { cidades, ufs } from "../db/schema";
 
 export function criarCidade(nome: string, ufId: string) {
   db.insert(cidades)
