@@ -14,6 +14,13 @@ import {
   atualizarCidade,
   excluirCidade,
 } from "./services/cidadeService";
+import {
+  criarRegiao,
+  listarRegioes,
+  buscarRegiaoPorId,
+  atualizarRegiao,
+  excluirRegiao,
+} from "./services/regiaoService";
 
 const prompt = promptSync();
 
@@ -247,6 +254,141 @@ function menuCidade() {
   }
 }
 
+function menuRegiao() {
+  let opcao = "";
+
+  while (opcao !== "0") {
+    console.log("\n=== CRUD DE REGIÃO ===");
+    console.log("1. Cadastrar região");
+    console.log("2. Listar regiões");
+    console.log("3. Buscar região por ID");
+    console.log("4. Atualizar região");
+    console.log("5. Excluir região");
+    console.log("0. Voltar");
+
+    opcao = prompt("Escolha uma opção: ");
+
+    switch (opcao) {
+      case "1": {
+        const nome = prompt("Nome da região: ").trim();
+
+        const cidades = listarCidades();
+        if (cidades.length === 0) {
+          console.log("Cadastre uma cidade antes de cadastrar regiões.");
+          break;
+        }
+
+        console.log("\nCidades disponíveis:");
+        for (const cidade of cidades) {
+          console.log(`${cidade.id} | ${cidade.nome}`);
+        }
+
+        const cidadeId = prompt("Digite o ID da cidade da região: ").trim();
+
+        const cidade = buscarCidadePorId(cidadeId);
+        if (!cidade) {
+          console.log("Cidade não encontrada.");
+          break;
+        }
+
+        if (!nome) {
+          console.log("Nome da região é obrigatório.");
+          break;
+        }
+
+        criarRegiao(nome, cidadeId);
+        console.log("Região cadastrada com sucesso.");
+        break;
+      }
+
+      case "2": {
+        const lista = listarRegioes();
+
+        if (lista.length === 0) {
+          console.log("Nenhuma região cadastrada.");
+          break;
+        }
+
+        console.log("\nLista de regiões:");
+        for (const regiao of lista) {
+          console.log(
+            `${regiao.id} | ${regiao.nome} | Cidade: ${regiao.cidadeNome}`,
+          );
+        }
+        break;
+      }
+
+      case "3": {
+        const id = prompt("ID da região: ").trim();
+        const regiao = buscarRegiaoPorId(id);
+
+        if (!regiao) {
+          console.log("Região não encontrada.");
+          break;
+        }
+
+        console.log(
+          `${regiao.id} | ${regiao.nome} | Cidade ID: ${regiao.cidadeId}`,
+        );
+        break;
+      }
+
+      case "4": {
+        const id = prompt("ID da região que deseja atualizar: ").trim();
+        const regiao = buscarRegiaoPorId(id);
+
+        if (!regiao) {
+          console.log("Região não encontrada.");
+          break;
+        }
+
+        const nome =
+          prompt(`Novo nome (${regiao.nome}): `).trim() || regiao.nome;
+
+        const cidades = listarCidades();
+        console.log("\nCidades disponíveis:");
+        for (const cidade of cidades) {
+          console.log(`${cidade.id} | ${cidade.nome}`);
+        }
+
+        const cidadeId =
+          prompt(`Novo Cidade ID (${regiao.cidadeId}): `).trim() ||
+          regiao.cidadeId;
+
+        const cidade = buscarCidadePorId(cidadeId);
+        if (!cidade) {
+          console.log("Cidade não encontrada.");
+          break;
+        }
+
+        atualizarRegiao(id, nome, cidadeId);
+        console.log("Região atualizada com sucesso.");
+        break;
+      }
+
+      case "5": {
+        const id = prompt("ID da região que deseja excluir: ").trim();
+        const regiao = buscarRegiaoPorId(id);
+
+        if (!regiao) {
+          console.log("Região não encontrada.");
+          break;
+        }
+
+        excluirRegiao(id);
+        console.log("Região excluída com sucesso.");
+        break;
+      }
+
+      case "0":
+        break;
+
+      default:
+        console.log("Opção inválida.");
+    }
+  }
+}
+
 function menuPrincipal() {
   let opcao = "";
 
@@ -254,6 +396,7 @@ function menuPrincipal() {
     console.log("\n=== MENU PRINCIPAL ===");
     console.log("1. CRUD de UF");
     console.log("2. CRUD de cidade");
+    console.log("3. CRUD de região");
     console.log("0. Sair");
 
     opcao = prompt("Escolha uma opção: ");
@@ -264,6 +407,9 @@ function menuPrincipal() {
         break;
       case "2":
         menuCidade();
+        break;
+      case "3":
+        menuRegiao();
         break;
       case "0":
         console.log("Encerrando...");
