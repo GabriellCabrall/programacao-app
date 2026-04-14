@@ -2,6 +2,7 @@ import { eq } from "drizzle-orm";
 import { v4 as uuidv4 } from "uuid";
 import { db } from "../db/connection";
 import { cidades } from "../db/schema";
+import { ufs } from "../db/schema";
 
 export function criarCidade(nome: string, ufId: string) {
   db.insert(cidades)
@@ -14,7 +15,16 @@ export function criarCidade(nome: string, ufId: string) {
 }
 
 export function listarCidades() {
-  return db.select().from(cidades).all();
+  return db
+    .select({
+      id: cidades.id,
+      nome: cidades.nome,
+      ufNome: ufs.nome,
+      ufSigla: ufs.sigla,
+    })
+    .from(cidades)
+    .leftJoin(ufs, eq(cidades.ufId, ufs.id))
+    .all();
 }
 
 export function buscarCidadePorId(id: string) {
