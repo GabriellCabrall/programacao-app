@@ -173,7 +173,7 @@ function menuCidade() {
         console.log("\nLista de cidades:");
         for (const cidade of lista) {
           console.log(
-            `${cidade.id} | ${cidade.nome} | UF ID: ${cidade.ufNome}`,
+            `${cidade.id} | ${cidade.nome} | ${cidade.ufSigla} - ${cidade.ufNome}`,
           );
         }
         break;
