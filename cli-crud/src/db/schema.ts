@@ -9,7 +9,9 @@ export const ufs = sqliteTable("ufs", {
 export const cidades = sqliteTable("cidades", {
   id: text("id").primaryKey(),
   nome: text("nome").notNull(),
-  sigla: text("sigla").notNull(),
+  ufId: text("uf_id")
+    .notNull()
+    .references(() => ufs.id),
 });
 
 export const regioes = sqliteTable("regioes", {
