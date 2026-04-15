@@ -28,6 +28,7 @@ export default function App() {
 
   const [currentScreen, setCurrentScreen] = useState<Screen>("home");
   const [selectedNews, setSelectedNews] = useState<NewsItem | null>(null);
+  const [menuVisible, setMenuVisible] = useState(false);
 
   if (!fontsLoaded) {
     return null;
@@ -37,7 +38,16 @@ export default function App() {
     setCurrentScreen("home");
   }
 
+  function openMenu() {
+    setMenuVisible(true);
+  }
+
+  function closeMenu() {
+    setMenuVisible(false);
+  }
+
   function goToLogin() {
+    setMenuVisible(false);
     setCurrentScreen("login");
   }
 
@@ -74,7 +84,15 @@ export default function App() {
         backgroundColor={colors.backgroundDark}
       />
 
-      {currentScreen === "home" && <HomeScreen onOpenNews={handleOpenNews} />}
+      {currentScreen === "home" && (
+        <HomeScreen
+          onOpenNews={handleOpenNews}
+          onOpenMenu={openMenu}
+          menuVisible={menuVisible}
+          onCloseMenu={closeMenu}
+          onOpenLogin={goToLogin}
+        />
+      )}
 
       {currentScreen === "detail" && selectedNews && (
         <NewsDetailScreen item={selectedNews} onBack={handleBackFromDetail} />

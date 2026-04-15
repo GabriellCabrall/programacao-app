@@ -7,9 +7,17 @@ type Props = {
   showMenu?: boolean;
   showBack?: boolean;
   onLeftPress?: () => void;
+  onSearchPress?: () => void;
+  onProfilePress?: () => void;
 };
 
-export function AppHeader({ showMenu, showBack, onLeftPress }: Props) {
+export function AppHeader({
+  showMenu,
+  showBack,
+  onLeftPress,
+  onSearchPress,
+  onProfilePress,
+}: Props) {
   return (
     <View style={styles.container}>
       <Pressable onPress={onLeftPress} style={styles.left}>
@@ -24,12 +32,21 @@ export function AppHeader({ showMenu, showBack, onLeftPress }: Props) {
       <AppLogo size="md" />
 
       <View style={styles.right}>
-        <Ionicons name="search-outline" size={22} color={colors.textPrimary} />
-        <Ionicons
-          name="person-circle-outline"
-          size={26}
-          color={colors.textPrimary}
-        />
+        <Pressable onPress={onSearchPress}>
+          <Ionicons
+            name="search-outline"
+            size={22}
+            color={colors.textPrimary}
+          />
+        </Pressable>
+
+        <Pressable onPress={onProfilePress}>
+          <Ionicons
+            name="person-circle-outline"
+            size={26}
+            color={colors.textPrimary}
+          />
+        </Pressable>
       </View>
     </View>
   );

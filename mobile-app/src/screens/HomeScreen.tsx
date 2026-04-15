@@ -1,5 +1,6 @@
 import {
   Image,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -15,12 +16,36 @@ import { AppHeader } from "../components/appHeader";
 
 type Props = {
   onOpenNews?: (id: string) => void;
+  onOpenMenu?: () => void;
+  menuVisible?: boolean;
+  onCloseMenu?: () => void;
+  onOpenLogin?: () => void;
 };
 
-export function HomeScreen({ onOpenNews }: Props) {
+export function HomeScreen({
+  onOpenNews,
+  onOpenMenu,
+  menuVisible = false,
+  onCloseMenu,
+  onOpenLogin,
+}: Props) {
   return (
     <View style={styles.container}>
-      <AppHeader showMenu />
+      <AppHeader showMenu onLeftPress={onOpenMenu} />
+
+      {menuVisible && (
+        <>
+          <Pressable style={styles.overlay} onPress={onCloseMenu} />
+
+          <View style={styles.sideMenu}>
+            <Text style={styles.sideMenuTitle}>Menu</Text>
+
+            <Pressable style={styles.sideMenuItem} onPress={onOpenLogin}>
+              <Text style={styles.sideMenuItemText}>Fazer login</Text>
+            </Pressable>
+          </View>
+        </>
+      )}
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <Image
@@ -115,6 +140,43 @@ const styles = StyleSheet.create({
     textDecorationLine: "underline",
     marginTop: 12,
     fontSize: 12,
+    fontFamily: "Inter",
+  },
+  overlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0,0,0,0.35)",
+    zIndex: 5,
+  },
+  sideMenu: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    bottom: 0,
+    width: 220,
+    backgroundColor: colors.backgroundDark,
+    paddingTop: 90,
+    paddingHorizontal: 18,
+    zIndex: 10,
+  },
+  sideMenuTitle: {
+    color: colors.textPrimary,
+    fontSize: 18,
+    fontFamily: "Inter",
+    fontWeight: "700",
+    marginBottom: 20,
+  },
+  sideMenuItem: {
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.borderSoft,
+  },
+  sideMenuItemText: {
+    color: colors.textPrimary,
+    fontSize: 14,
     fontFamily: "Inter",
   },
 });
