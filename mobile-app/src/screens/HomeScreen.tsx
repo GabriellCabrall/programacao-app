@@ -1,4 +1,11 @@
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { AppLogo } from "../components/AppLogo";
 import { NewsCard } from "../components/NewsCard";
 import { colors } from "../constants/colors";
@@ -34,11 +41,13 @@ export function HomeScreen({ onOpenNews }: Props) {
         />
 
         <LinearGradient
-            colors={["#04527A", "#01689C", "#007AB8"]}
-            locations={[0, 0.5, 1]}
-            style={styles.newsSection}
+          colors={["#04527A", "#01689C", "#007AB8"]}
+          locations={[0, 0.5, 1]}
+          style={styles.newsSection}
         >
-          <Text style={styles.sectionTitle}>Confira as notícias do momento.</Text>
+          <Text style={styles.sectionTitle}>
+            Confira as notícias do momento.
+          </Text>
 
           {newsMock.map((item) => (
             <NewsCard
@@ -89,7 +98,7 @@ const styles = StyleSheet.create({
     fontFamily: "Inter",
   },
   scrollContent: {
-    paddingBottom: 24,
+    flexGrow: 1,
   },
   heroImage: {
     width: "100%",
@@ -97,9 +106,11 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
   },
   newsSection: {
+    flex: 1,
     paddingHorizontal: 14,
     paddingTop: 10,
     paddingBottom: 24,
+    justifyContent: "space-between",
   },
   sectionTitle: {
     color: colors.textPrimary,
