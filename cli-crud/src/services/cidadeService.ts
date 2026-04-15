@@ -31,9 +31,9 @@ export function buscarCidadePorId(id: string) {
 }
 
 export function atualizarCidade(id: string, nome: string, ufId: string) {
-  db.update(cidades).set({ nome, ufId }).where(eq(cidades.id, id)).run();
+  return db.update(cidades).set({ nome, ufId }).where(eq(cidades.id, id)).run();
 }
 
 export function excluirCidade(id: string) {
-  db.delete(cidades).where(eq(cidades.id, id)).run();
+  return db.delete(cidades).where(eq(cidades.id, id)).run();
 }
