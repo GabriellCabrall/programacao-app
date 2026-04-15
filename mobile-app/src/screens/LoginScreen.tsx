@@ -7,9 +7,15 @@ type Props = {
   onBack?: () => void;
   onEnter?: () => void;
   onOpenCadastro?: () => void;
+  onOpenForgotPassword?: () => void;
 };
 
-export function LoginScreen({ onBack, onEnter, onOpenCadastro }: Props) {
+export function LoginScreen({
+  onBack,
+  onEnter,
+  onOpenCadastro,
+  onOpenForgotPassword,
+}: Props) {
   return (
     <View style={styles.container}>
       <View style={styles.topBar}>
@@ -47,7 +53,7 @@ export function LoginScreen({ onBack, onEnter, onOpenCadastro }: Props) {
         </View>
 
         <View style={styles.bottomSection}>
-          <Pressable>
+          <Pressable onPress={onOpenForgotPassword}>
             <Text style={styles.forgotPassword}>Esqueceu a senha?</Text>
           </Pressable>
 
