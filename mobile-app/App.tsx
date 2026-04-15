@@ -12,6 +12,7 @@ import { CadastroScreen } from "./src/screens/CadastroScreen";
 import { ProfileSelectScreen } from "./src/screens/ProfileSelectScreen";
 import { ForgotPasswordScreen } from "./src/screens/ForgotPasswordScreen";
 import { AuthorProfileScreen } from "./src/screens/AuthorProfileScreen";
+import { AuthorNewsScreen } from "./src/screens/AuthorNewsScreen";
 
 type Screen =
   | "home"
@@ -20,7 +21,8 @@ type Screen =
   | "cadastro"
   | "perfil"
   | "forgotPassword"
-  | "authorProfile";
+  | "authorProfile"
+  | "authorNews";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -60,6 +62,10 @@ export default function App() {
 
   function goToAuthorProfile() {
     setCurrentScreen("authorProfile");
+  }
+
+  function goToAuthorNews() {
+    setCurrentScreen("authorNews");
   }
 
   function openMenu() {
@@ -142,7 +148,15 @@ export default function App() {
       {currentScreen === "authorProfile" && (
         <AuthorProfileScreen
           onBack={goToPerfil}
-          onOpenMyNews={() => console.log("abrir minhas notícias")}
+          onOpenMyNews={goToAuthorNews}
+        />
+      )}
+
+      {currentScreen === "authorNews" && (
+        <AuthorNewsScreen
+          onBack={goToAuthorProfile}
+          onOpenEditNews={(id) => console.log("editar notícia", id)}
+          onOpenNewNews={() => console.log("nova notícia")}
         />
       )}
     </>
