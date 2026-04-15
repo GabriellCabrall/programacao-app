@@ -4,8 +4,11 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   View,
+  Keyboard,
 } from "react-native";
+import { useRef } from "react";
 import { colors } from "../constants/colors";
 import { NewsItem } from "../data/news";
 import { AppHeader } from "../components/appHeader";
@@ -17,6 +20,12 @@ type Props = {
 };
 
 export function NewsDetailScreen({ item, onBack }: Props) {
+  const inputRef = useRef<TextInput>(null);
+
+  function handleFocusInput() {
+    inputRef.current?.focus();
+  }
+
   return (
     <View style={styles.container}>
       <AppHeader showBack onLeftPress={onBack} />
@@ -44,13 +53,38 @@ export function NewsDetailScreen({ item, onBack }: Props) {
           laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
         </Text>
 
-        <Pressable style={styles.commentButton}>
+        <Pressable style={styles.commentButton} onPress={handleFocusInput}>
           <Ionicons
             name="chatbubble-ellipses-outline"
             size={28}
             color={colors.textPrimary}
           />
         </Pressable>
+
+        <View style={styles.commentsSection}>
+          <Text style={styles.commentsTitle}>Comentários</Text>
+
+          <View style={styles.commentItem}>
+            <Text style={styles.commentAuthor}>João</Text>
+            <Text style={styles.commentText}>
+              Muito interessante essa notícia!
+            </Text>
+          </View>
+
+          <View style={styles.commentItem}>
+            <Text style={styles.commentAuthor}>Ana</Text>
+            <Text style={styles.commentText}>
+              Não concordo com esse ponto apresentado.
+            </Text>
+          </View>
+
+          <TextInput
+            ref={inputRef}
+            placeholder="Escreva um comentário..."
+            placeholderTextColor={colors.textSecondary}
+            style={styles.commentInput}
+          />
+        </View>
       </ScrollView>
     </View>
   );
@@ -137,5 +171,48 @@ const styles = StyleSheet.create({
   commentIcon: {
     color: colors.textPrimary,
     fontSize: 24,
+  },
+  commentsSection: {
+    marginTop: 24,
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: "rgba(255,255,255,0.2)",
+  },
+
+  commentsTitle: {
+    color: colors.textPrimary,
+    fontSize: 14,
+    fontFamily: "Inter",
+    fontWeight: "600",
+    marginBottom: 12,
+  },
+
+  commentItem: {
+    marginBottom: 12,
+  },
+
+  commentAuthor: {
+    color: colors.textPrimary,
+    fontSize: 12,
+    fontFamily: "Inter",
+    fontWeight: "600",
+  },
+
+  commentText: {
+    color: colors.textPrimary,
+    fontSize: 13,
+    fontFamily: "Inter",
+    marginTop: 2,
+  },
+
+  commentInput: {
+    width: "100%",
+    height: 40,
+    borderRadius: 8,
+    backgroundColor: "rgba(255,255,255,0.2)",
+    paddingHorizontal: 12,
+    color: colors.textPrimary,
+    fontFamily: "Inter",
+    marginTop: 10,
   },
 });

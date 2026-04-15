@@ -16,6 +16,7 @@ import { AuthorNewsScreen } from "./src/screens/AuthorNewsScreen";
 import { EditNewsScreen } from "./src/screens/EditNewsScreen";
 import { NewNewsScreen } from "./src/screens/NewNewsScreen";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { ReaderProfileScreen } from "./src/screens/ReaderProfileScreen";
 
 type Screen =
   | "home"
@@ -27,7 +28,8 @@ type Screen =
   | "authorProfile"
   | "authorNews"
   | "editNews"
-  | "newNews";
+  | "newNews"
+  | "readerProfile";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -84,6 +86,10 @@ export default function App() {
 
   function goToNewNews() {
     setCurrentScreen("newNews");
+  }
+
+  function goToReaderProfile() {
+    setCurrentScreen("readerProfile");
   }
 
   function openMenu() {
@@ -160,7 +166,7 @@ export default function App() {
           <ProfileSelectScreen
             onBack={goToLogin}
             onSelectAutor={goToAuthorProfile}
-            onSelectLeitor={() => console.log("Leitor")}
+            onSelectLeitor={goToReaderProfile}
             onSelectEditor={() => console.log("Editor")}
             onSelectAdmin={() => console.log("SuperAdmin")}
           />
@@ -198,6 +204,10 @@ export default function App() {
 
         {currentScreen === "newNews" && (
           <NewNewsScreen onBack={goToAuthorNews} onPublish={handleSaveNews} />
+        )}
+
+        {currentScreen === "readerProfile" && (
+          <ReaderProfileScreen onBack={goToPerfil} onGoHome={goToHome} />
         )}
       </>
     </SafeAreaProvider>
