@@ -1,6 +1,7 @@
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { AppLogo } from "../components/AppLogo";
 import { colors } from "../constants/colors";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type Props = {
   onBack?: () => void;
@@ -9,9 +10,10 @@ type Props = {
 };
 
 export function CadastroScreen({ onBack, onCadastrar, onOpenLogin }: Props) {
+  const insets = useSafeAreaInsets();
   return (
     <View style={styles.container}>
-      <View style={styles.topBar}>
+      <View style={[styles.topBar, { paddingTop: insets.top + 6 }]}>
         <Pressable onPress={onBack}>
           <Text style={styles.backIcon}>←</Text>
         </Pressable>
@@ -87,7 +89,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.backgroundDark,
   },
   topBar: {
-    paddingTop: 10,
     paddingHorizontal: 16,
   },
   backIcon: {

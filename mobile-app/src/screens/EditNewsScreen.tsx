@@ -9,6 +9,7 @@ import {
 import { AppLogo } from "../components/AppLogo";
 import { colors } from "../constants/colors";
 import { NewsItem } from "../data/news";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type Props = {
   item: NewsItem;
@@ -17,9 +18,10 @@ type Props = {
 };
 
 export function EditNewsScreen({ item, onBack, onSave }: Props) {
+  const insets = useSafeAreaInsets();
   return (
     <View style={styles.container}>
-      <View style={styles.topBar}>
+      <View style={[styles.topBar, { paddingTop: insets.top + 6 }]}>
         <Pressable onPress={onBack}>
           <Text style={styles.backIcon}>←</Text>
         </Pressable>
@@ -63,7 +65,6 @@ const styles = StyleSheet.create({
   },
   topBar: {
     backgroundColor: colors.backgroundDark,
-    paddingTop: 10,
     paddingHorizontal: 16,
     paddingBottom: 8,
     flexDirection: "row",

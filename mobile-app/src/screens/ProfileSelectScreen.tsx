@@ -2,6 +2,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { AppLogo } from "../components/AppLogo";
 import { colors } from "../constants/colors";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type Props = {
   onBack?: () => void;
@@ -33,9 +34,10 @@ export function ProfileSelectScreen({
   onSelectEditor,
   onSelectAdmin,
 }: Props) {
+  const insets = useSafeAreaInsets();
   return (
     <View style={styles.container}>
-      <View style={styles.topBar}>
+      <View style={[styles.topBar, { paddingTop: insets.top + 6 }]}>
         <Pressable onPress={onBack}>
           <Text style={styles.backIcon}>←</Text>
         </Pressable>
@@ -82,7 +84,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.backgroundDark,
   },
   topBar: {
-    paddingTop: 10,
     paddingHorizontal: 16,
   },
   backIcon: {

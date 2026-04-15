@@ -2,6 +2,7 @@ import { Pressable, StyleSheet, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { AppLogo } from "./AppLogo";
 import { colors } from "../constants/colors";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type Props = {
   showMenu?: boolean;
@@ -18,8 +19,10 @@ export function AppHeader({
   onSearchPress,
   onProfilePress,
 }: Props) {
+  const insets = useSafeAreaInsets();
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top + 6 }]}>
       <Pressable onPress={onLeftPress} style={styles.left}>
         {showMenu && (
           <Ionicons name="menu" size={26} color={colors.textPrimary} />
@@ -55,7 +58,6 @@ export function AppHeader({
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.backgroundDark,
-    paddingTop: 10,
     paddingHorizontal: 16,
     paddingBottom: 8,
     flexDirection: "row",

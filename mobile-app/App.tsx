@@ -15,6 +15,7 @@ import { AuthorProfileScreen } from "./src/screens/AuthorProfileScreen";
 import { AuthorNewsScreen } from "./src/screens/AuthorNewsScreen";
 import { EditNewsScreen } from "./src/screens/EditNewsScreen";
 import { NewNewsScreen } from "./src/screens/NewNewsScreen";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 type Screen =
   | "home"
@@ -117,86 +118,88 @@ export default function App() {
   }
 
   return (
-    <>
-      <StatusBar
-        barStyle="light-content"
-        backgroundColor={colors.backgroundDark}
-      />
-
-      {currentScreen === "home" && (
-        <HomeScreen
-          onOpenNews={handleOpenNews}
-          onOpenMenu={openMenu}
-          menuVisible={menuVisible}
-          onCloseMenu={closeMenu}
-          onOpenLogin={goToLogin}
+    <SafeAreaProvider>
+      <>
+        <StatusBar
+          barStyle="light-content"
+          backgroundColor={colors.backgroundDark}
         />
-      )}
 
-      {currentScreen === "detail" && selectedNews && (
-        <NewsDetailScreen item={selectedNews} onBack={handleBackFromDetail} />
-      )}
+        {currentScreen === "home" && (
+          <HomeScreen
+            onOpenNews={handleOpenNews}
+            onOpenMenu={openMenu}
+            menuVisible={menuVisible}
+            onCloseMenu={closeMenu}
+            onOpenLogin={goToLogin}
+          />
+        )}
 
-      {currentScreen === "login" && (
-        <LoginScreen
-          onBack={goToHome}
-          onEnter={goToPerfil}
-          onOpenCadastro={goToCadastro}
-          onOpenForgotPassword={goToForgotPassword}
-        />
-      )}
+        {currentScreen === "detail" && selectedNews && (
+          <NewsDetailScreen item={selectedNews} onBack={handleBackFromDetail} />
+        )}
 
-      {currentScreen === "cadastro" && (
-        <CadastroScreen
-          onBack={goToLogin}
-          onCadastrar={goToPerfil}
-          onOpenLogin={goToLogin}
-        />
-      )}
+        {currentScreen === "login" && (
+          <LoginScreen
+            onBack={goToHome}
+            onEnter={goToPerfil}
+            onOpenCadastro={goToCadastro}
+            onOpenForgotPassword={goToForgotPassword}
+          />
+        )}
 
-      {currentScreen === "perfil" && (
-        <ProfileSelectScreen
-          onBack={goToLogin}
-          onSelectAutor={goToAuthorProfile}
-          onSelectLeitor={() => console.log("Leitor")}
-          onSelectEditor={() => console.log("Editor")}
-          onSelectAdmin={() => console.log("SuperAdmin")}
-        />
-      )}
+        {currentScreen === "cadastro" && (
+          <CadastroScreen
+            onBack={goToLogin}
+            onCadastrar={goToPerfil}
+            onOpenLogin={goToLogin}
+          />
+        )}
 
-      {currentScreen === "forgotPassword" && (
-        <ForgotPasswordScreen
-          onBack={goToLogin}
-          onSend={() => console.log("enviar recuperação")}
-        />
-      )}
+        {currentScreen === "perfil" && (
+          <ProfileSelectScreen
+            onBack={goToLogin}
+            onSelectAutor={goToAuthorProfile}
+            onSelectLeitor={() => console.log("Leitor")}
+            onSelectEditor={() => console.log("Editor")}
+            onSelectAdmin={() => console.log("SuperAdmin")}
+          />
+        )}
 
-      {currentScreen === "authorProfile" && (
-        <AuthorProfileScreen
-          onBack={goToPerfil}
-          onOpenMyNews={goToAuthorNews}
-        />
-      )}
+        {currentScreen === "forgotPassword" && (
+          <ForgotPasswordScreen
+            onBack={goToLogin}
+            onSend={() => console.log("enviar recuperação")}
+          />
+        )}
 
-      {currentScreen === "authorNews" && (
-        <AuthorNewsScreen
-          onBack={goToAuthorProfile}
-          onOpenEditNews={goToEditNews}
-          onOpenNewNews={goToNewNews}
-        />
-      )}
+        {currentScreen === "authorProfile" && (
+          <AuthorProfileScreen
+            onBack={goToPerfil}
+            onOpenMyNews={goToAuthorNews}
+          />
+        )}
 
-      {currentScreen === "editNews" && selectedNews && (
-        <EditNewsScreen
-          item={selectedNews}
-          onBack={handleBackFromEditNews}
-          onSave={handleSaveNews}
-        />
-      )}
+        {currentScreen === "authorNews" && (
+          <AuthorNewsScreen
+            onBack={goToAuthorProfile}
+            onOpenEditNews={goToEditNews}
+            onOpenNewNews={goToNewNews}
+          />
+        )}
 
-      {currentScreen === "newNews" && (
-        <NewNewsScreen onBack={goToAuthorNews} onPublish={handleSaveNews} />
-      )}
-    </>
+        {currentScreen === "editNews" && selectedNews && (
+          <EditNewsScreen
+            item={selectedNews}
+            onBack={handleBackFromEditNews}
+            onSave={handleSaveNews}
+          />
+        )}
+
+        {currentScreen === "newNews" && (
+          <NewNewsScreen onBack={goToAuthorNews} onPublish={handleSaveNews} />
+        )}
+      </>
+    </SafeAreaProvider>
   );
 }

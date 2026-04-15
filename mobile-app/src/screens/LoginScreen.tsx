@@ -2,6 +2,7 @@ import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { AppHeader } from "../components/appHeader";
 import { AppLogo } from "../components/AppLogo";
 import { colors } from "../constants/colors";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type Props = {
   onBack?: () => void;
@@ -16,9 +17,10 @@ export function LoginScreen({
   onOpenCadastro,
   onOpenForgotPassword,
 }: Props) {
+  const insets = useSafeAreaInsets();
   return (
     <View style={styles.container}>
-      <View style={styles.topBar}>
+      <View style={[styles.topBar, { paddingTop: insets.top + 6 }]}>
         <Pressable onPress={onBack}>
           <Text style={styles.backIcon}>←</Text>
         </Pressable>
@@ -175,7 +177,6 @@ const styles = StyleSheet.create({
     fontFamily: "Inter",
   },
   topBar: {
-    paddingTop: 10,
     paddingHorizontal: 16,
   },
 

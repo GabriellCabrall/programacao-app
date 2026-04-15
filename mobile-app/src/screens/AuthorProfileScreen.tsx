@@ -1,5 +1,6 @@
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { colors } from "../constants/colors";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type Props = {
   onBack?: () => void;
@@ -7,10 +8,11 @@ type Props = {
 };
 
 export function AuthorProfileScreen({ onBack, onOpenMyNews }: Props) {
+  const insets = useSafeAreaInsets();
   return (
     <View style={styles.container}>
       {/* Topo */}
-      <View style={styles.topBar}>
+      <View style={[styles.topBar, { paddingTop: insets.top + 6 }]}>
         <Pressable onPress={onBack}>
           <Text style={styles.backIcon}>←</Text>
         </Pressable>
@@ -69,7 +71,6 @@ const styles = StyleSheet.create({
   },
 
   topBar: {
-    paddingTop: 10,
     paddingHorizontal: 16,
   },
 
