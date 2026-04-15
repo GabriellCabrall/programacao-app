@@ -11,6 +11,7 @@ import { LoginScreen } from "./src/screens/LoginScreen";
 import { CadastroScreen } from "./src/screens/CadastroScreen";
 import { ProfileSelectScreen } from "./src/screens/ProfileSelectScreen";
 import { ForgotPasswordScreen } from "./src/screens/ForgotPasswordScreen";
+import { AuthorProfileScreen } from "./src/screens/AuthorProfileScreen";
 
 type Screen =
   | "home"
@@ -18,7 +19,8 @@ type Screen =
   | "login"
   | "cadastro"
   | "perfil"
-  | "forgotPassword";
+  | "forgotPassword"
+  | "authorProfile";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -35,15 +37,8 @@ export default function App() {
   }
 
   function goToHome() {
-    setCurrentScreen("home");
-  }
-
-  function openMenu() {
-    setMenuVisible(true);
-  }
-
-  function closeMenu() {
     setMenuVisible(false);
+    setCurrentScreen("home");
   }
 
   function goToLogin() {
@@ -61,6 +56,18 @@ export default function App() {
 
   function goToForgotPassword() {
     setCurrentScreen("forgotPassword");
+  }
+
+  function goToAuthorProfile() {
+    setCurrentScreen("authorProfile");
+  }
+
+  function openMenu() {
+    setMenuVisible(true);
+  }
+
+  function closeMenu() {
+    setMenuVisible(false);
   }
 
   function handleOpenNews(id: string) {
@@ -118,7 +125,7 @@ export default function App() {
       {currentScreen === "perfil" && (
         <ProfileSelectScreen
           onBack={goToLogin}
-          onSelectAutor={() => console.log("Autor")}
+          onSelectAutor={goToAuthorProfile}
           onSelectLeitor={() => console.log("Leitor")}
           onSelectEditor={() => console.log("Editor")}
           onSelectAdmin={() => console.log("SuperAdmin")}
@@ -129,6 +136,13 @@ export default function App() {
         <ForgotPasswordScreen
           onBack={goToLogin}
           onSend={() => console.log("enviar recuperação")}
+        />
+      )}
+
+      {currentScreen === "authorProfile" && (
+        <AuthorProfileScreen
+          onBack={goToPerfil}
+          onOpenMyNews={() => console.log("abrir minhas notícias")}
         />
       )}
     </>
