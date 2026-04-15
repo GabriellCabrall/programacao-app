@@ -14,6 +14,7 @@ import { ForgotPasswordScreen } from "./src/screens/ForgotPasswordScreen";
 import { AuthorProfileScreen } from "./src/screens/AuthorProfileScreen";
 import { AuthorNewsScreen } from "./src/screens/AuthorNewsScreen";
 import { EditNewsScreen } from "./src/screens/EditNewsScreen";
+import { NewNewsScreen } from "./src/screens/NewNewsScreen";
 
 type Screen =
   | "home"
@@ -24,7 +25,8 @@ type Screen =
   | "forgotPassword"
   | "authorProfile"
   | "authorNews"
-  | "editNews";
+  | "editNews"
+  | "newNews";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -77,6 +79,10 @@ export default function App() {
 
     setSelectedNews(foundNews);
     setCurrentScreen("editNews");
+  }
+
+  function goToNewNews() {
+    setCurrentScreen("newNews");
   }
 
   function openMenu() {
@@ -176,7 +182,7 @@ export default function App() {
         <AuthorNewsScreen
           onBack={goToAuthorProfile}
           onOpenEditNews={goToEditNews}
-          onOpenNewNews={() => console.log("nova notícia")}
+          onOpenNewNews={goToNewNews}
         />
       )}
 
@@ -186,6 +192,10 @@ export default function App() {
           onBack={handleBackFromEditNews}
           onSave={handleSaveNews}
         />
+      )}
+
+      {currentScreen === "newNews" && (
+        <NewNewsScreen onBack={goToAuthorNews} onPublish={handleSaveNews} />
       )}
     </>
   );
