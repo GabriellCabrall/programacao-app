@@ -1,4 +1,4 @@
-teste# Entrega 3 - Programação de App
+# Entrega 3 - Programação de App
 
 ## Estrutura do projeto
 
