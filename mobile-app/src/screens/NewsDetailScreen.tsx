@@ -6,9 +6,10 @@ import {
   Text,
   View,
 } from "react-native";
-import { AppLogo } from "../components/AppLogo";
 import { colors } from "../constants/colors";
 import { NewsItem } from "../data/news";
+import { AppHeader } from "../components/appHeader";
+import { Ionicons } from "@expo/vector-icons";
 
 type Props = {
   item: NewsItem;
@@ -18,17 +19,7 @@ type Props = {
 export function NewsDetailScreen({ item, onBack }: Props) {
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Pressable onPress={onBack} style={styles.leftButton}>
-          <Text style={styles.backIcon}>←</Text>
-        </Pressable>
-
-        <AppLogo size="md" />
-
-        <View style={styles.rightArea}>
-          <Text style={styles.profileIcon}>👤</Text>
-        </View>
-      </View>
+      <AppHeader showBack onLeftPress={onBack} />
 
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.sectionLabel}>Detalhes da Notícia</Text>
@@ -54,7 +45,11 @@ export function NewsDetailScreen({ item, onBack }: Props) {
         </Text>
 
         <Pressable style={styles.commentButton}>
-          <Text style={styles.commentIcon}>🗨</Text>
+          <Ionicons
+            name="chatbubble-ellipses-outline"
+            size={28}
+            color={colors.textPrimary}
+          />
         </Pressable>
       </ScrollView>
     </View>

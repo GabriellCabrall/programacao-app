@@ -11,6 +11,7 @@ import { NewsCard } from "../components/NewsCard";
 import { colors } from "../constants/colors";
 import { newsMock } from "../data/news";
 import { LinearGradient } from "expo-linear-gradient";
+import { AppHeader } from "../components/appHeader";
 
 type Props = {
   onOpenNews?: (id: string) => void;
@@ -19,18 +20,7 @@ type Props = {
 export function HomeScreen({ onOpenNews }: Props) {
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.leftIcon}>
-          <Text style={styles.iconText}>☰</Text>
-        </View>
-
-        <AppLogo size="md" />
-
-        <View style={styles.rightIcons}>
-          <Text style={styles.iconText}>◔</Text>
-          <Text style={styles.iconText}>👤</Text>
-        </View>
-      </View>
+      <AppHeader showMenu />
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <Image
