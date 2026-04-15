@@ -13,6 +13,7 @@ import { ProfileSelectScreen } from "./src/screens/ProfileSelectScreen";
 import { ForgotPasswordScreen } from "./src/screens/ForgotPasswordScreen";
 import { AuthorProfileScreen } from "./src/screens/AuthorProfileScreen";
 import { AuthorNewsScreen } from "./src/screens/AuthorNewsScreen";
+import { EditNewsScreen } from "./src/screens/EditNewsScreen";
 
 type Screen =
   | "home"
@@ -22,7 +23,8 @@ type Screen =
   | "perfil"
   | "forgotPassword"
   | "authorProfile"
-  | "authorNews";
+  | "authorNews"
+  | "editNews";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -68,6 +70,15 @@ export default function App() {
     setCurrentScreen("authorNews");
   }
 
+  function goToEditNews(id: string) {
+    const foundNews = newsMock.find((item) => item.id === id);
+
+    if (!foundNews) return;
+
+    setSelectedNews(foundNews);
+    setCurrentScreen("editNews");
+  }
+
   function openMenu() {
     setMenuVisible(true);
   }
@@ -88,6 +99,15 @@ export default function App() {
   function handleBackFromDetail() {
     setSelectedNews(null);
     setCurrentScreen("home");
+  }
+
+  function handleBackFromEditNews() {
+    setCurrentScreen("authorNews");
+  }
+
+  function handleSaveNews() {
+    console.log("salvar notícia");
+    setCurrentScreen("authorNews");
   }
 
   return (
@@ -155,8 +175,16 @@ export default function App() {
       {currentScreen === "authorNews" && (
         <AuthorNewsScreen
           onBack={goToAuthorProfile}
-          onOpenEditNews={(id) => console.log("editar notícia", id)}
+          onOpenEditNews={goToEditNews}
           onOpenNewNews={() => console.log("nova notícia")}
+        />
+      )}
+
+      {currentScreen === "editNews" && selectedNews && (
+        <EditNewsScreen
+          item={selectedNews}
+          onBack={handleBackFromEditNews}
+          onSave={handleSaveNews}
         />
       )}
     </>
