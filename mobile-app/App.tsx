@@ -22,6 +22,7 @@ import { SuperAdminDashboardScreen } from "./src/screens/SuperAdminDashboardScre
 import { useEffect } from "react";
 import { initDatabase } from "./src/db/init";
 import { CrudUfScreen } from "./src/screens/CrudUfScreen";
+import { CrudCidadeScreen } from "./src/screens/CrudCidadeScreen";
 
 type Screen =
   | "home"
@@ -36,7 +37,8 @@ type Screen =
   | "newNews"
   | "readerProfile"
   | "superAdminDashboard"
-  | "crudUf";
+  | "crudUf"
+  | "crudCidade";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -110,6 +112,10 @@ export default function App() {
 
   function goToCrudUf() {
     setCurrentScreen("crudUf");
+  }
+
+  function goToCrudCidade() {
+    setCurrentScreen("crudCidade");
   }
 
   function handleSaveNews() {
@@ -233,10 +239,14 @@ export default function App() {
           <CrudUfScreen onBack={goToSuperAdminDashboard} />
         )}
 
+        {currentScreen === "crudCidade" && (
+          <CrudCidadeScreen onBack={goToSuperAdminDashboard} />
+        )}
+
         {currentScreen === "superAdminDashboard" && (
           <SuperAdminDashboardScreen
             onBack={goToPerfil}
-            onOpenCrudCidades={() => console.log("CRUD Cidades")}
+            onOpenCrudCidades={goToCrudCidade}
             onOpenCrudTags={() => console.log("CRUD Tags")}
             onOpenCrudUf={goToCrudUf}
             onOpenCrudNoticias={() => console.log("CRUD Notícias")}
