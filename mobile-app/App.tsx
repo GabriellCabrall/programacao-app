@@ -1,3 +1,4 @@
+import "react-native-get-random-values";
 import { StatusBar } from "react-native";
 import { useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -20,6 +21,7 @@ import { ReaderProfileScreen } from "./src/screens/ReaderProfileScreen";
 import { SuperAdminDashboardScreen } from "./src/screens/SuperAdminDashboardScreen";
 import { useEffect } from "react";
 import { initDatabase } from "./src/db/init";
+import { CrudUfScreen } from "./src/screens/CrudUfScreen";
 
 type Screen =
   | "home"
@@ -33,7 +35,8 @@ type Screen =
   | "editNews"
   | "newNews"
   | "readerProfile"
-  | "superAdminDashboard";
+  | "superAdminDashboard"
+  | "crudUf";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -45,15 +48,15 @@ export default function App() {
   const [selectedNews, setSelectedNews] = useState<NewsItem | null>(null);
   const [menuVisible, setMenuVisible] = useState(false);
 
-  if (!fontsLoaded) {
-    return null;
-  }
-
   useEffect(() => {
     initDatabase().catch((error) => {
       console.error("Erro ao inicializar banco:", error);
     });
   }, []);
+
+  if (!fontsLoaded) {
+    return null;
+  }
 
   function goToHome() {
     setMenuVisible(false);
@@ -103,6 +106,10 @@ export default function App() {
 
     setSelectedNews(foundNews);
     setCurrentScreen("editNews");
+  }
+
+  function goToCrudUf() {
+    setCurrentScreen("crudUf");
   }
 
   function handleSaveNews() {
@@ -222,12 +229,16 @@ export default function App() {
           <ReaderProfileScreen onBack={goToPerfil} onGoHome={goToHome} />
         )}
 
+        {currentScreen === "crudUf" && (
+          <CrudUfScreen onBack={goToSuperAdminDashboard} />
+        )}
+
         {currentScreen === "superAdminDashboard" && (
           <SuperAdminDashboardScreen
             onBack={goToPerfil}
             onOpenCrudCidades={() => console.log("CRUD Cidades")}
             onOpenCrudTags={() => console.log("CRUD Tags")}
-            onOpenCrudUf={() => console.log("CRUD UF")}
+            onOpenCrudUf={goToCrudUf}
             onOpenCrudNoticias={() => console.log("CRUD Notícias")}
             onOpenCrudUsuarios={() => console.log("CRUD Usuários")}
             onOpenCrudPerfis={() => console.log("CRUD Perfis")}
