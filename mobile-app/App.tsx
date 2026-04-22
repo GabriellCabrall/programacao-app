@@ -23,6 +23,7 @@ import { useEffect } from "react";
 import { initDatabase } from "./src/db/init";
 import { CrudUfScreen } from "./src/screens/CrudUfScreen";
 import { CrudCidadeScreen } from "./src/screens/CrudCidadeScreen";
+import { CrudRegiaoScreen } from "./src/screens/CrudRegiaoScreen";
 
 type Screen =
   | "home"
@@ -38,7 +39,8 @@ type Screen =
   | "readerProfile"
   | "superAdminDashboard"
   | "crudUf"
-  | "crudCidade";
+  | "crudCidade"
+  | "crudRegiao";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -116,6 +118,10 @@ export default function App() {
 
   function goToCrudCidade() {
     setCurrentScreen("crudCidade");
+  }
+
+  function goToCrudRegiao() {
+    setCurrentScreen("crudRegiao");
   }
 
   function handleSaveNews() {
@@ -243,6 +249,10 @@ export default function App() {
           <CrudCidadeScreen onBack={goToSuperAdminDashboard} />
         )}
 
+        {currentScreen === "crudRegiao" && (
+          <CrudRegiaoScreen onBack={goToSuperAdminDashboard} />
+        )}
+
         {currentScreen === "superAdminDashboard" && (
           <SuperAdminDashboardScreen
             onBack={goToPerfil}
@@ -252,7 +262,7 @@ export default function App() {
             onOpenCrudNoticias={() => console.log("CRUD Notícias")}
             onOpenCrudUsuarios={() => console.log("CRUD Usuários")}
             onOpenCrudPerfis={() => console.log("CRUD Perfis")}
-            onOpenCrudRegioes={() => console.log("CRUD Regiões")}
+            onOpenCrudRegioes={goToCrudRegiao}
             onOpenGerenciarComentarios={() =>
               console.log("Gerenciar Comentários")
             }
