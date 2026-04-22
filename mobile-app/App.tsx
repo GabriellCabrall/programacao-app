@@ -18,6 +18,8 @@ import { EditNewsScreen } from "./src/screens/EditNewsScreen";
 import { NewNewsScreen } from "./src/screens/NewNewsScreen";
 import { ReaderProfileScreen } from "./src/screens/ReaderProfileScreen";
 import { SuperAdminDashboardScreen } from "./src/screens/SuperAdminDashboardScreen";
+import { useEffect } from "react";
+import { initDatabase } from "./src/db/init";
 
 type Screen =
   | "home"
@@ -46,6 +48,12 @@ export default function App() {
   if (!fontsLoaded) {
     return null;
   }
+
+  useEffect(() => {
+    initDatabase().catch((error) => {
+      console.error("Erro ao inicializar banco:", error);
+    });
+  }, []);
 
   function goToHome() {
     setMenuVisible(false);
