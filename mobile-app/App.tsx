@@ -1,5 +1,6 @@
 import { StatusBar } from "react-native";
 import { useState } from "react";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useFonts, Inter_400Regular } from "@expo-google-fonts/inter";
 import { Imbue_400Regular } from "@expo-google-fonts/imbue";
 
@@ -15,8 +16,8 @@ import { AuthorProfileScreen } from "./src/screens/AuthorProfileScreen";
 import { AuthorNewsScreen } from "./src/screens/AuthorNewsScreen";
 import { EditNewsScreen } from "./src/screens/EditNewsScreen";
 import { NewNewsScreen } from "./src/screens/NewNewsScreen";
-import { SafeAreaProvider } from "react-native-safe-area-context";
 import { ReaderProfileScreen } from "./src/screens/ReaderProfileScreen";
+import { SuperAdminDashboardScreen } from "./src/screens/SuperAdminDashboardScreen";
 
 type Screen =
   | "home"
@@ -29,7 +30,8 @@ type Screen =
   | "authorNews"
   | "editNews"
   | "newNews"
-  | "readerProfile";
+  | "readerProfile"
+  | "superAdminDashboard";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -75,21 +77,29 @@ export default function App() {
     setCurrentScreen("authorNews");
   }
 
-  function goToEditNews(id: string) {
-    const foundNews = newsMock.find((item) => item.id === id);
+  function goToReaderProfile() {
+    setCurrentScreen("readerProfile");
+  }
 
-    if (!foundNews) return;
-
-    setSelectedNews(foundNews);
-    setCurrentScreen("editNews");
+  function goToSuperAdminDashboard() {
+    setCurrentScreen("superAdminDashboard");
   }
 
   function goToNewNews() {
     setCurrentScreen("newNews");
   }
 
-  function goToReaderProfile() {
-    setCurrentScreen("readerProfile");
+  function goToEditNews(id: string) {
+    const foundNews = newsMock.find((item) => item.id === id);
+    if (!foundNews) return;
+
+    setSelectedNews(foundNews);
+    setCurrentScreen("editNews");
+  }
+
+  function handleSaveNews() {
+    console.log("salvar/publicar notícia");
+    setCurrentScreen("authorNews");
   }
 
   function openMenu() {
@@ -102,7 +112,6 @@ export default function App() {
 
   function handleOpenNews(id: string) {
     const foundNews = newsMock.find((item) => item.id === id);
-
     if (!foundNews) return;
 
     setSelectedNews(foundNews);
@@ -115,11 +124,6 @@ export default function App() {
   }
 
   function handleBackFromEditNews() {
-    setCurrentScreen("authorNews");
-  }
-
-  function handleSaveNews() {
-    console.log("salvar notícia");
     setCurrentScreen("authorNews");
   }
 
@@ -168,7 +172,7 @@ export default function App() {
             onSelectAutor={goToAuthorProfile}
             onSelectLeitor={goToReaderProfile}
             onSelectEditor={() => console.log("Editor")}
-            onSelectAdmin={() => console.log("SuperAdmin")}
+            onSelectAdmin={goToSuperAdminDashboard}
           />
         )}
 
@@ -208,6 +212,22 @@ export default function App() {
 
         {currentScreen === "readerProfile" && (
           <ReaderProfileScreen onBack={goToPerfil} onGoHome={goToHome} />
+        )}
+
+        {currentScreen === "superAdminDashboard" && (
+          <SuperAdminDashboardScreen
+            onBack={goToPerfil}
+            onOpenCrudCidades={() => console.log("CRUD Cidades")}
+            onOpenCrudTags={() => console.log("CRUD Tags")}
+            onOpenCrudUf={() => console.log("CRUD UF")}
+            onOpenCrudNoticias={() => console.log("CRUD Notícias")}
+            onOpenCrudUsuarios={() => console.log("CRUD Usuários")}
+            onOpenCrudPerfis={() => console.log("CRUD Perfis")}
+            onOpenCrudRegioes={() => console.log("CRUD Regiões")}
+            onOpenGerenciarComentarios={() =>
+              console.log("Gerenciar Comentários")
+            }
+          />
         )}
       </>
     </SafeAreaProvider>
