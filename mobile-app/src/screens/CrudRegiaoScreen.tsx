@@ -6,6 +6,7 @@ import {
   Modal,
   Platform,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -37,6 +38,7 @@ export function CrudRegiaoScreen({ onBack }: Props) {
 
   const [formModalVisible, setFormModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const [editing, setEditing] = useState<any | null>(null);
   const [selected, setSelected] = useState<any | null>(null);
@@ -65,6 +67,7 @@ export function CrudRegiaoScreen({ onBack }: Props) {
     setEditing(null);
     setNome("");
     setCidadeId("");
+    setDropdownOpen(false);
     setFormModalVisible(true);
   }
 
@@ -72,6 +75,7 @@ export function CrudRegiaoScreen({ onBack }: Props) {
     setEditing(item);
     setNome(item.nome);
     setCidadeId(item.cidadeId);
+    setDropdownOpen(false);
     setFormModalVisible(true);
   }
 
@@ -85,6 +89,7 @@ export function CrudRegiaoScreen({ onBack }: Props) {
     setEditing(null);
     setNome("");
     setCidadeId("");
+    setDropdownOpen(false);
   }
 
   function fecharExclusao() {
@@ -120,6 +125,9 @@ export function CrudRegiaoScreen({ onBack }: Props) {
     }
   }
 
+  const selectedCidade = cidades.find((cidade) => cidade.id === cidadeId);
+  const selectedCidadeLabel = selectedCidade ? selectedCidade.nome : "";
+
   return (
     <View style={styles.container}>
       <View style={[styles.topBar, { paddingTop: insets.top + 6 }]}>
@@ -147,6 +155,7 @@ export function CrudRegiaoScreen({ onBack }: Props) {
             <View style={styles.card}>
               <Text style={styles.cardText}>
                 {item.nome} - {item.cidadeNome}
+                {item.ufSigla ? ` - ${item.ufSigla}` : ""}
               </Text>
 
               <View style={styles.actions}>
@@ -165,7 +174,12 @@ export function CrudRegiaoScreen({ onBack }: Props) {
         />
       </LinearGradient>
 
-      <Modal visible={formModalVisible} transparent animationType="fade">
+      <Modal
+        visible={formModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={fecharFormulario}
+      >
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : undefined}
           keyboardVerticalOffset={8}
@@ -173,29 +187,82 @@ export function CrudRegiaoScreen({ onBack }: Props) {
         >
           <View style={styles.modalCard}>
             <Text style={styles.modalTitle}>
-              {editing ? "Editar" : "Adicionar"} Região
+              {editing ? "Editar Região" : "Adicionar Região"}
             </Text>
 
-            <TextInput
-              style={styles.input}
-              placeholder="Nome"
-              placeholderTextColor="#6B7280"
-              value={nome}
-              onChangeText={setNome}
-            />
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Nome</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Digite o nome da região"
+                placeholderTextColor="#6B7280"
+                value={nome}
+                onChangeText={setNome}
+              />
+            </View>
 
-            {cidades.map((cidade) => (
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Cidade</Text>
+
               <Pressable
-                key={cidade.id}
-                style={[
-                  styles.optionItem,
-                  cidadeId === cidade.id && styles.optionSelected,
-                ]}
-                onPress={() => setCidadeId(cidade.id)}
+                style={styles.selectField}
+                onPress={() => setDropdownOpen((prev) => !prev)}
               >
-                <Text style={styles.optionText}>{cidade.nome}</Text>
+                <Text
+                  style={[
+                    styles.selectFieldText,
+                    !selectedCidadeLabel && styles.selectPlaceholderText,
+                  ]}
+                >
+                  {selectedCidadeLabel || "Selecione uma cidade"}
+                </Text>
+
+                <Ionicons
+                  name={
+                    dropdownOpen ? "chevron-up-outline" : "chevron-down-outline"
+                  }
+                  size={18}
+                  color="#1F2D3A"
+                />
               </Pressable>
-            ))}
+
+              {dropdownOpen && (
+                <View style={styles.dropdownContainer}>
+                  <ScrollView
+                    style={styles.dropdownScroll}
+                    nestedScrollEnabled
+                    showsVerticalScrollIndicator
+                  >
+                    {cidades.map((cidade) => {
+                      const isSelected = cidadeId === cidade.id;
+
+                      return (
+                        <Pressable
+                          key={cidade.id}
+                          style={[
+                            styles.dropdownOption,
+                            isSelected && styles.dropdownOptionSelected,
+                          ]}
+                          onPress={() => {
+                            setCidadeId(cidade.id);
+                            setDropdownOpen(false);
+                          }}
+                        >
+                          <Text
+                            style={[
+                              styles.dropdownOptionText,
+                              isSelected && styles.dropdownOptionTextSelected,
+                            ]}
+                          >
+                            {cidade.nome}
+                          </Text>
+                        </Pressable>
+                      );
+                    })}
+                  </ScrollView>
+                </View>
+              )}
+            </View>
 
             <View style={styles.modalActions}>
               <Pressable
@@ -216,14 +283,23 @@ export function CrudRegiaoScreen({ onBack }: Props) {
         </KeyboardAvoidingView>
       </Modal>
 
-      <Modal visible={deleteModalVisible} transparent animationType="fade">
+      <Modal
+        visible={deleteModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={fecharExclusao}
+      >
         <View style={styles.modalOverlay}>
           <View style={styles.modalCard}>
             <Text style={styles.modalTitle}>Confirmar exclusão</Text>
 
             <Text style={styles.deleteText}>
               Deseja excluir a região{" "}
-              <Text style={styles.deleteHighlight}>{selected?.nome}</Text>?
+              <Text style={styles.deleteHighlight}>
+                {selected?.nome}
+                {selected?.cidadeNome ? ` - ${selected.cidadeNome}` : ""}
+              </Text>
+              ?
             </Text>
 
             <View style={styles.modalActions}>
@@ -267,7 +343,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 8,
     paddingBottom: 20,
-    alignItems: "center",
   },
   title: {
     color: colors.textPrimary,
@@ -346,6 +421,15 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 18,
   },
+  inputGroup: {
+    marginBottom: 14,
+  },
+  label: {
+    color: "#1F2D3A",
+    fontSize: 12,
+    fontFamily: "Inter",
+    marginBottom: 6,
+  },
   input: {
     height: 42,
     borderRadius: 10,
@@ -356,31 +440,61 @@ const styles = StyleSheet.create({
     color: "#1F2D3A",
     fontFamily: "Inter",
     fontSize: 14,
-    marginBottom: 12,
   },
-  optionItem: {
+  selectField: {
+    height: 42,
     borderRadius: 10,
     backgroundColor: "#FFFFFF",
     borderWidth: 1,
     borderColor: "#D1D5DB",
     paddingHorizontal: 12,
-    paddingVertical: 10,
-    marginBottom: 8,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
-  optionSelected: {
-    backgroundColor: "#DCEFFD",
-    borderColor: "#0584C7",
-  },
-  optionText: {
+  selectFieldText: {
     color: "#1F2D3A",
     fontFamily: "Inter",
     fontSize: 14,
+    flex: 1,
+    paddingRight: 8,
+  },
+  selectPlaceholderText: {
+    color: "#6B7280",
+  },
+  dropdownContainer: {
+    marginTop: 8,
+    borderRadius: 10,
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#D1D5DB",
+    overflow: "hidden",
+  },
+  dropdownScroll: {
+    maxHeight: 180,
+  },
+  dropdownOption: {
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#E5E7EB",
+  },
+  dropdownOptionSelected: {
+    backgroundColor: "#DCEFFD",
+  },
+  dropdownOptionText: {
+    color: "#1F2D3A",
+    fontFamily: "Inter",
+    fontSize: 14,
+  },
+  dropdownOptionTextSelected: {
+    fontWeight: "600",
   },
   modalActions: {
     flexDirection: "row",
     justifyContent: "space-between",
     gap: 12,
-    marginTop: 12,
+    marginTop: 8,
   },
   modalButton: {
     flex: 1,

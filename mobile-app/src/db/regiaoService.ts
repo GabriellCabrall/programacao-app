@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import { v4 as uuidv4 } from "uuid";
 import { db } from "./client";
-import { cidades, regioes } from "./schema";
+import { cidades, regioes, ufs } from "./schema";
 
 export type RegiaoFormData = {
   nome: string;
@@ -15,9 +15,11 @@ export async function listarRegioes() {
       nome: regioes.nome,
       cidadeId: regioes.cidadeId,
       cidadeNome: cidades.nome,
+      ufSigla: ufs.sigla,
     })
     .from(regioes)
-    .leftJoin(cidades, eq(regioes.cidadeId, cidades.id));
+    .leftJoin(cidades, eq(regioes.cidadeId, cidades.id))
+    .leftJoin(ufs, eq(cidades.ufId, ufs.id));
 }
 
 export async function listarCidadesSimples() {
