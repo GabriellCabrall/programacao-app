@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
 import {
+  Alert,
   FlatList,
+  KeyboardAvoidingView,
   Modal,
+  Platform,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
   View,
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
@@ -43,6 +44,7 @@ export function CrudCidadeScreen({ onBack }: Props) {
 
   const [nome, setNome] = useState("");
   const [ufId, setUfId] = useState("");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   useEffect(() => {
     carregar();
@@ -60,6 +62,7 @@ export function CrudCidadeScreen({ onBack }: Props) {
     setEditing(null);
     setNome("");
     setUfId("");
+    setDropdownOpen(false);
     setFormModalVisible(true);
   }
 
@@ -67,12 +70,26 @@ export function CrudCidadeScreen({ onBack }: Props) {
     setEditing(item);
     setNome(item.nome);
     setUfId(item.ufId);
+    setDropdownOpen(false);
     setFormModalVisible(true);
   }
 
   function abrirExcluir(item: any) {
     setSelected(item);
     setDeleteModalVisible(true);
+  }
+
+  function fecharFormulario() {
+    setFormModalVisible(false);
+    setEditing(null);
+    setNome("");
+    setUfId("");
+    setDropdownOpen(false);
+  }
+
+  function fecharExclusao() {
+    setDeleteModalVisible(false);
+    setSelected(null);
   }
 
   async function salvar() {
@@ -83,10 +100,10 @@ export function CrudCidadeScreen({ onBack }: Props) {
         await criarCidade({ nome, ufId });
       }
 
-      setFormModalVisible(false);
-      carregar();
+      fecharFormulario();
+      await carregar();
     } catch (e: any) {
-      Alert.alert("Erro", e.message);
+      Alert.alert("Erro", e.message ?? "Não foi possível salvar a cidade.");
     }
   }
 
@@ -96,6 +113,11 @@ export function CrudCidadeScreen({ onBack }: Props) {
     setDeleteModalVisible(false);
     carregar();
   }
+
+  const selectedUfLabel =
+    ufs.find((uf) => uf.id === ufId)?.sigla +
+      " - " +
+      ufs.find((uf) => uf.id === ufId)?.nome || "";
 
   return (
     <View style={styles.container}>
@@ -140,7 +162,12 @@ export function CrudCidadeScreen({ onBack }: Props) {
       </LinearGradient>
 
       {/* MODAL FORM */}
-      <Modal visible={formModalVisible} transparent animationType="fade">
+      <Modal
+        visible={formModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={fecharFormulario}
+      >
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : undefined}
           keyboardVerticalOffset={8}
@@ -148,45 +175,137 @@ export function CrudCidadeScreen({ onBack }: Props) {
         >
           <View style={styles.modalCard}>
             <Text style={styles.modalTitle}>
-              {editing ? "Editar" : "Adicionar"} Cidade
+              {editing ? "Editar Cidade" : "Adicionar Cidade"}
             </Text>
 
-            <TextInput
-              style={styles.input}
-              placeholder="Nome"
-              value={nome}
-              onChangeText={setNome}
-            />
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Nome</Text>
+              <TextInput
+                style={styles.input}
+                value={nome}
+                onChangeText={setNome}
+                placeholder="Digite o nome da cidade"
+                placeholderTextColor="#6B7280"
+              />
+            </View>
 
-            {/* seletor simples */}
-            {ufs.map((uf) => (
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>UF</Text>
+
               <Pressable
-                key={uf.id}
-                style={[styles.ufOption, ufId === uf.id && styles.ufSelected]}
-                onPress={() => setUfId(uf.id)}
+                style={styles.selectField}
+                onPress={() => setDropdownOpen((prev) => !prev)}
               >
-                <Text>
-                  {uf.sigla} - {uf.nome}
+                <Text
+                  style={[
+                    styles.selectFieldText,
+                    !selectedUfLabel && styles.selectPlaceholderText,
+                  ]}
+                >
+                  {selectedUfLabel || "Selecione uma UF"}
                 </Text>
-              </Pressable>
-            ))}
 
-            <Pressable style={styles.saveButton} onPress={salvar}>
-              <Text>Salvar</Text>
-            </Pressable>
+                <Ionicons
+                  name={
+                    dropdownOpen ? "chevron-up-outline" : "chevron-down-outline"
+                  }
+                  size={18}
+                  color="#1F2D3A"
+                />
+              </Pressable>
+
+              {dropdownOpen && (
+                <View style={styles.dropdownContainer}>
+                  <ScrollView
+                    style={styles.dropdownScroll}
+                    nestedScrollEnabled
+                    showsVerticalScrollIndicator
+                  >
+                    {ufs.map((uf) => {
+                      const isSelected = ufId === uf.id;
+
+                      return (
+                        <Pressable
+                          key={uf.id}
+                          style={[
+                            styles.dropdownOption,
+                            isSelected && styles.dropdownOptionSelected,
+                          ]}
+                          onPress={() => {
+                            setUfId(uf.id);
+                            setDropdownOpen(false);
+                          }}
+                        >
+                          <Text
+                            style={[
+                              styles.dropdownOptionText,
+                              isSelected && styles.dropdownOptionTextSelected,
+                            ]}
+                          >
+                            {uf.sigla} - {uf.nome}
+                          </Text>
+                        </Pressable>
+                      );
+                    })}
+                  </ScrollView>
+                </View>
+              )}
+            </View>
+
+            <View style={styles.modalActions}>
+              <Pressable
+                style={[styles.modalButton, styles.cancelButton]}
+                onPress={fecharFormulario}
+              >
+                <Text style={styles.cancelButtonText}>Cancelar</Text>
+              </Pressable>
+
+              <Pressable
+                style={[styles.modalButton, styles.confirmButton]}
+                onPress={salvar}
+              >
+                <Text style={styles.confirmButtonText}>Salvar</Text>
+              </Pressable>
+            </View>
           </View>
         </KeyboardAvoidingView>
       </Modal>
 
       {/* MODAL DELETE */}
-      <Modal visible={deleteModalVisible} transparent animationType="fade">
+      <Modal
+        visible={deleteModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={fecharExclusao}
+      >
         <View style={styles.modalOverlay}>
           <View style={styles.modalCard}>
-            <Text>Excluir cidade?</Text>
+            <Text style={styles.modalTitle}>Confirmar exclusão</Text>
 
-            <Pressable onPress={excluir}>
-              <Text>Confirmar</Text>
-            </Pressable>
+            <Text style={styles.deleteText}>
+              Deseja excluir a cidade{" "}
+              <Text style={styles.deleteHighlight}>
+                {selected?.nome}
+                {selected?.ufSigla ? ` - ${selected.ufSigla}` : ""}
+              </Text>
+              ?
+            </Text>
+
+            <View style={styles.modalActions}>
+              <Pressable
+                style={[styles.modalButton, styles.cancelButton]}
+                onPress={fecharExclusao}
+              >
+                <Text style={styles.cancelButtonText}>Cancelar</Text>
+              </Pressable>
+
+              <Pressable
+                style={[styles.modalButton, styles.deleteButton]}
+                onPress={excluir}
+              >
+                <Text style={styles.confirmButtonText}>Excluir</Text>
+              </Pressable>
+            </View>
           </View>
         </View>
       </Modal>
@@ -195,6 +314,119 @@ export function CrudCidadeScreen({ onBack }: Props) {
 }
 
 const styles = StyleSheet.create({
+  inputGroup: {
+    marginBottom: 14,
+  },
+  label: {
+    color: "#1F2D3A",
+    fontSize: 12,
+    fontFamily: "Inter",
+    marginBottom: 6,
+  },
+  selectField: {
+    height: 42,
+    borderRadius: 10,
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#D1D5DB",
+    paddingHorizontal: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  selectFieldText: {
+    color: "#1F2D3A",
+    fontFamily: "Inter",
+    fontSize: 14,
+    flex: 1,
+    paddingRight: 8,
+  },
+  selectPlaceholderText: {
+    color: "#6B7280",
+  },
+
+  dropdownContainer: {
+    marginTop: 8,
+    borderRadius: 10,
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#D1D5DB",
+    overflow: "hidden",
+  },
+
+  dropdownScroll: {
+    maxHeight: 180,
+  },
+
+  dropdownOption: {
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#E5E7EB",
+  },
+
+  dropdownOptionSelected: {
+    backgroundColor: "#DCEFFD",
+  },
+
+  dropdownOptionText: {
+    color: "#1F2D3A",
+    fontFamily: "Inter",
+    fontSize: 14,
+  },
+
+  dropdownOptionTextSelected: {
+    fontWeight: "600",
+  },
+  modalActions: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 12,
+    marginTop: 8,
+  },
+  modalButton: {
+    flex: 1,
+    height: 40,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  cancelButton: {
+    backgroundColor: "#D8DEE5",
+  },
+  confirmButton: {
+    backgroundColor: "#2D4A5A",
+  },
+  deleteButton: {
+    backgroundColor: "#B42318",
+  },
+
+  cancelButtonText: {
+    color: "#1F2D3A",
+    fontSize: 13,
+    fontFamily: "Inter",
+    fontWeight: "600",
+  },
+
+  confirmButtonText: {
+    color: "#FFFFFF",
+    fontSize: 13,
+    fontFamily: "Inter",
+    fontWeight: "600",
+  },
+
+  deleteText: {
+    color: "#1F2D3A",
+    fontSize: 14,
+    fontFamily: "Inter",
+    textAlign: "center",
+    lineHeight: 22,
+    marginBottom: 16,
+  },
+
+  deleteHighlight: {
+    fontWeight: "700",
+  },
   container: {
     flex: 1,
     backgroundColor: colors.backgroundDark,
@@ -297,7 +529,6 @@ const styles = StyleSheet.create({
     color: "#1F2D3A",
     fontFamily: "Inter",
     fontSize: 14,
-    marginBottom: 12,
   },
   ufOption: {
     borderRadius: 10,
